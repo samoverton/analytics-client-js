@@ -1,7 +1,7 @@
 {
   "author": "Ravi Rajani <rrajani@acunu.com>",
   "name": "acunu-analytics",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "javascript client for Acunu Analytics",
   "repository": {
       "type": "git",

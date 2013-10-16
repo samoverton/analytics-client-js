@@ -1,0 +1,20 @@
+#!/bin/bash
+
+Port=5900
+NumberOfValues=1
+
+if [[ $# -gt 0 ]]; then
+    NumberOfValues=$1
+fi
+
+for (( i=0; i<$NumberOfValues; i++ )); do
+    Port=$(( ${Port} + 1 ))
+    while netstat -atwn | grep "^.*:${Port}.*:\*\s*LISTEN\s*$" >>/dev/null
+    do
+        Port=$(( ${Port} + 1 ))
+    done
+    Ports+=($Port)
+done
+
+echo ${Ports[@]}
+

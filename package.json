@@ -1,0 +1,19 @@
+{
+  "author": "Ravi Rajani <rrajani@acunu.com>",
+  "name": "js-acunu-analytics",
+  "version": "0.1.0",
+  "description": "javascript client for Acunu Analytics",
+  "homepage": "http://www.acunu.com",
+  "main": "index.js",
+  "dependencies": {
+    "when": ">=2.2.1",
+    "browserify": ">=2.33.0"
+  },
+  "devDependencies": {
+    "underscore": ">=1.5.2",
+    "node-getopt": ">=0.2.3",
+    "grunt": "~0.4.1",
+    "browserify": "~2.34.1",
+    "grunt-browserify": "~1.2.9"
+  }
+}

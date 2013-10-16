@@ -1,0 +1,5 @@
+{
+    "vm":"aaron",
+    "port": 8080,
+    "adminUser": "admin:admin"
+}

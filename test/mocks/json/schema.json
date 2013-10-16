@@ -1,0 +1,302 @@
+{
+   "AA_dashboardProperties": {
+      "name": "AA_dashboardProperties",
+      "data": [
+         {
+            "id": 1,
+            "name": "ty",
+            "type": "STRING"
+         },
+         {
+            "id": 2,
+            "name": "k",
+            "type": "STRING"
+         },
+         {
+            "id": 3,
+            "name": "v",
+            "type": "STRING"
+         }
+      ],
+      "queries": [
+         {
+            "patterns": [
+               {
+                  "group": [
+
+                  ],
+                  "where": [
+                     "k"
+                  ]
+               },
+               {
+                  "group": [
+                     "k"
+                  ],
+                  "where": [
+                     "ty"
+                  ]
+               }
+            ],
+            "select": "LAST(v)"
+         }
+      ],
+      "properties": {
+         "product_version": "5.0.0",
+         "store": "true",
+         "hidden": "true",
+         "drill": "true"
+      },
+      "storage": "DEFAULT",
+      "version": 2
+   },
+   "AA_userDashboards": {
+      "name": "AA_userDashboards",
+      "data": [
+         {
+            "id": 1,
+            "name": "userId",
+            "type": "STRING"
+         },
+         {
+            "id": 2,
+            "name": "k",
+            "type": "STRING"
+         },
+         {
+            "id": 3,
+            "choices": [
+               "0",
+               "1"
+            ],
+            "name": "allow",
+            "type": "ENUM"
+         }
+      ],
+      "queries": [
+         {
+            "patterns": [
+               {
+                  "group": [
+                     "k"
+                  ],
+                  "where": [
+                     "userId"
+                  ]
+               }
+            ],
+            "select": "LAST(allow)"
+         }
+      ],
+      "properties": {
+         "product_version": "5.0.0",
+         "store": "true",
+         "hidden": "true",
+         "drill": "true"
+      },
+      "storage": "DEFAULT",
+      "version": 1
+   },
+   "tests": {
+      "name": "tests",
+      "data": [
+         {
+            "id": 2,
+            "name": "test_run",
+            "type": "STRING"
+         },
+         {
+            "id": 3,
+            "name": "platform",
+            "type": "STRING"
+         },
+         {
+            "id": 5,
+            "buckets": [
+               {
+                  "id": "10",
+                  "size": 10
+               }
+            ],
+            "name": "duration",
+            "type": "LONG"
+         },
+         {
+            "id": 6,
+            "name": "build",
+            "type": "STRING"
+         },
+         {
+            "id": 7,
+            "name": "branch",
+            "type": "STRING"
+         },
+         {
+            "id": 8,
+            "name": "test",
+            "type": "PATH",
+            "delim": "\/"
+         },
+         {
+            "id": 9,
+            "name": "time",
+            "type": "STRING"
+         },
+         {
+            "id": 10,
+            "name": "_time",
+            "type": "STRING"
+         }
+      ],
+      "queries": [
+         {
+            "patterns": [
+               {
+                  "group": [
+
+                  ],
+                  "where": [
+
+                  ]
+               },
+               {
+                  "group": [
+                     "branch"
+                  ],
+                  "where": [
+
+                  ]
+               },
+               {
+                  "group": [
+
+                  ],
+                  "where": [
+                     "branch"
+                  ]
+               },
+               {
+                  "group": [
+                     "branch"
+                  ],
+                  "where": [
+                     "branch"
+                  ]
+               },
+               {
+                  "group": [
+                     "build"
+                  ],
+                  "where": [
+
+                  ]
+               },
+               {
+                  "group": [
+                     "build",
+                     "branch"
+                  ],
+                  "where": [
+
+                  ]
+               },
+               {
+                  "group": [
+                     "build"
+                  ],
+                  "where": [
+                     "branch"
+                  ]
+               },
+               {
+                  "group": [
+                     "build",
+                     "branch"
+                  ],
+                  "where": [
+                     "branch"
+                  ]
+               },
+               {
+                  "group": [
+
+                  ],
+                  "where": [
+                     "build"
+                  ]
+               },
+               {
+                  "group": [
+                     "branch"
+                  ],
+                  "where": [
+                     "build"
+                  ]
+               },
+               {
+                  "group": [
+
+                  ],
+                  "where": [
+                     "build",
+                     "branch"
+                  ]
+               },
+               {
+                  "group": [
+                     "branch"
+                  ],
+                  "where": [
+                     "build",
+                     "branch"
+                  ]
+               },
+               {
+                  "group": [
+                     "build"
+                  ],
+                  "where": [
+                     "build"
+                  ]
+               },
+               {
+                  "group": [
+                     "build",
+                     "branch"
+                  ],
+                  "where": [
+                     "build"
+                  ]
+               },
+               {
+                  "group": [
+                     "build"
+                  ],
+                  "where": [
+                     "build",
+                     "branch"
+                  ]
+               },
+               {
+                  "group": [
+                     "build",
+                     "branch"
+                  ],
+                  "where": [
+                     "build",
+                     "branch"
+                  ]
+               }
+            ],
+            "select": "COUNT"
+         }
+      ],
+      "properties": {
+         "product_version": "5.0.0",
+         "store": "true",
+         "drill": "true"
+      },
+      "storage": "DEFAULT",
+      "version": 68
+   }
+}

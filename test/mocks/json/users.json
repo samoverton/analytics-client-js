@@ -1,0 +1,5 @@
+[
+    { "username": "ravi", "email": "rrajani@acunu.com", "password": "password","customField":"hello" },
+    { "username": "henry", "email": "hhughes@acunu.com", "password": "p","customField1":"bye" },
+    { "username": "andrew", "email": "ajefferson@acunu.com", "password": "pwd" }
+]

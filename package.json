@@ -12,6 +12,9 @@
   "dependencies": {
     "when": ">=2.2.1"
   },
+  "bin": {
+      "insertData": "./bin/insertData"
+  },
   "devDependencies": {
     "underscore": ">=1.5.2",
     "node-getopt": ">=0.2.3",

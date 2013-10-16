@@ -1,13 +1,16 @@
 {
   "author": "Ravi Rajani <rrajani@acunu.com>",
-  "name": "js-acunu-analytics",
+  "name": "acunu-analytics",
   "version": "0.1.0",
   "description": "javascript client for Acunu Analytics",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/acunu/analytics-client-js.git"
+  },
   "homepage": "http://www.acunu.com",
   "main": "index.js",
   "dependencies": {
-    "when": ">=2.2.1",
-    "browserify": ">=2.33.0"
+    "when": ">=2.2.1"
   },
   "devDependencies": {
     "underscore": ">=1.5.2",

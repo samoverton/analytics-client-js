@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-var AA = require('./../index');
-var Config = AA.ConnectionConfig;
-var Cluster = AA.Cluster;
 var GetOpt = require('node-getopt');
-var util = require('util');
+var insertData = require('../examples/insertData.js');
 
 var getopt = new GetOpt([
     ['','help','display this help page and exit'],
@@ -31,51 +28,6 @@ if(opt.argv.length < 2) {
     process.exit(1);
 }
 
-var file = opt.argv[0];
-var config = new Config;
-if(opt.options['batch-size']) {
-    config.setOption('INSERT_BATCH_SIZE',parseInt(opt.options['batch-size']));
-}
-if(opt.options.username && opt.options.password) {
-    config.setOptions({
-        USERNAME: opt.options.username,
-        PASSWORD: opt.options.password
-    });
-}
-
-var hosts = opt.options['host'] || ['localhost'];
-
-var cluster = new Cluster;
-cluster.addURIs.apply(cluster,hosts);
-
-var session = cluster.getSession(config);
-
-var inserter = session.inserter(opt.argv[1]);
-
-console.log("INFO: batch size: %d bytes",inserter.getBatchSize());
-var progress = 0;
-var outputFormat = "%s %d bytes ... [%s]";
-inserter.insert(file).then(function(res){
-    process.stdout.write(util.format(outputFormat+" \n",
-        "Streaming",
-        progress,
-        res.statusCode+" "+res.statusText
-    ));
-    if(res.body) console.log(res.body);
-},function(err){
-    if(err.statusCode && err.statusText) {
-        process.stdout.write(util.format("\nError: %d %s",err.statusCode,err.statusText));
-    }
-    console.error("\n"+err.message);
-    process.exit(1);
-},function(update){
-    var perc = Math.round(update.progress*100/update.total);
-    progress = update.progress;
-    process.stdout.write(util.format(outputFormat+"\r",
-        perc === 100 ? "Processing" : "Streaming",
-        progress,
-        perc === 100 ? "Pending" : perc+"%"
-    ));
-});
+insertData(opt.argv[0],opt.argv[1],opt.options);
 
 

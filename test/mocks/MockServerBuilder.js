@@ -1,8 +1,10 @@
 var http = require('http');
+var https = require('https');
 var _ = require('underscore');
 var url = require('url');
 var querystring = require('querystring');
 var when = require('when');
+var fs = require('fs');
 
 /**
  * @constructor
@@ -57,9 +59,21 @@ MockPath.prototype.getResponse = function(request) {
     else return null;
 };
 
-MockServerBuilder.prototype.listen = function(port,hostname) {
+/**
+ * @param {Number} port
+ * @param {Object} options
+ * options.port the port
+ * options.hostname the hostname
+ * options.protocol http or https, defaults to http
+ * @returns {http.Server || https.Server}
+ */
+MockServerBuilder.prototype.listen = function(port,options) {
     var that = this;
-    var server = http.createServer(function(req,res){
+    options = _({
+        protocol: 'http'
+    }).extend(options);
+    var lib = http;
+    var listener = function(req,res){
         var parsedUrl = url.parse(req.url);
         var method = req.method;
         var id = pathId(method,parsedUrl.pathname);
@@ -106,8 +120,19 @@ MockServerBuilder.prototype.listen = function(port,hostname) {
                 flush();
             }
         });
-    });
-    server.listen(port,hostname || 'localhost');
+    };
+    var server;
+    if(options.protocol == 'https') {
+        lib = https;
+        var serverOpts = {
+            pfx: fs.readFileSync(__dirname+'/ssl/mycert.pfx'),
+            passphrase: 'password'
+        };
+        server = lib.createServer(serverOpts,listener);
+    } else {
+        server = lib.createServer(listener);
+    }
+    server.listen(port,options.hostname || 'localhost');
     return server;
 };
 

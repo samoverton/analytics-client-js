@@ -2,12 +2,19 @@ var AA = require('./../index');
 var Config = AA.ConnectionConfig;
 var Cluster = AA.Cluster;
 var util = require('util');
+var fs = require('fs');
 
 module.exports = function(file,table,options) {
 
     var config = new Config;
     if(options['batch-size']) {
         config.setOption('INSERT_BATCH_SIZE',parseInt(options['batch-size']));
+    }
+    if(options['ssl-cert']) {
+        config.setOption('SSL_PFX',options['ssl-cert']);
+    }
+    if(options['ssl-pass']) {
+        config.setOption('SSL_PASSPHRASE',options['ssl-pass']);
     }
     if(options.username && options.password) {
         config.setOptions({
@@ -29,7 +36,7 @@ module.exports = function(file,table,options) {
     var outputFormat = "%s %d bytes ... [%s]";
     inserter.insert(file).then(function(res){
         process.stdout.write(util.format(outputFormat+" \n",
-            "Streaming",
+            "Transferred ",
             progress,
             res.statusCode+" "+res.statusText
         ));

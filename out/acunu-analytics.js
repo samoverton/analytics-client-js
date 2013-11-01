@@ -12,7 +12,7 @@
     function Connection() {};
 
     module.exports = function(opts) {
-        var cluster = new Cluster('http://'+window.location.host);
+        var cluster = new Cluster(window.location.protocol+'//'+window.location.host);
         var connectionConfig = new ConnectionConfig(opts);
         Connection.prototype = cluster.getSession(connectionConfig);
         return new Connection();
@@ -327,20 +327,19 @@ AA.Connection = require('./Connection');
     function addURIs() {
         var args = Array.prototype.slice.call(arguments);
         var that = this;
+        var transform = function(h) {
+            // default to http if no protocol specified
+            if(!/^http/.test(h)) return 'http://'+h;
+            return h;
+        };
         args.forEach(function(arg){
             if(Array.isArray(arg)) {
                 arg.forEach(function(h){
-                    var k = h;
-                    if(!/^http:\/\//.test(h)) {
-                        k = "http://"+h;
-                    }
+                    var k = transform(h);
                     that.hosts[k] = new Host(k,that);
                 });
             } else if(typeof arg === "string") {
-                var k = arg;
-                if(!/^http:\/\//.test(arg)) {
-                    k = "http://"+arg;
-                }
+                var k = transform(arg);
                 that.hosts[k] = new Host(k,that);
             }
         });
@@ -433,7 +432,14 @@ AA.Connection = require('./Connection');
         // auth specific
         USERNAME: null,
         PASSWORD: null,
-        SESSION_KEY: null
+        SESSION_KEY: null,
+
+        //ssl specific
+        SSL_PFX: null,
+        SSL_KEY: null,
+        SSL_PASSPHRASE: null,
+        SSL_CERT: null,
+        SSL_CA: null
     };
 
     /**
@@ -1950,5 +1956,5 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); }, this);
 
-},{"__browserify_process":17}]},{},[5,6,7,8,9,10,11,12,13,14,15,16,1,2,3,4])
+},{"__browserify_process":17}]},{},[5,6,7,8,9,10,11,12,13,14,16,1,2,15,4,3])
 ;

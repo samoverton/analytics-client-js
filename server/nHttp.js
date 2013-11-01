@@ -3,8 +3,10 @@
     var HttpError = require('../lib/HttpError');
     var when = require('when');
     var http = require('http');
+    var https = require('https');
     var Cluster = require('../lib/Cluster');
     var querystring = require('querystring');
+    var fs = require('fs');
 
     var self = Object.create(HttpInterface.prototype);
 
@@ -50,17 +52,27 @@
             if(username && password) {
                 o.auth = username+":"+password;
             }
-            var match = /^https?:\/\/([^:]*):?(.*)/.exec(this.url);
+            var match = /^(https?):\/\/([^:]*):?(.*)/.exec(this.url);
+            var send = http;
             if(match) {
-                o.hostname = match[1];
-                if(match[2]) {
-                    o.port = match[2];
+                if(match[1] == 'https') {
+                    send = https;
+                    o.pfx = fs.readFileSync(this.cluster.config.options.SSL_PFX);
+                    o.key = this.cluster.config.options.SSL_KEY;
+                    o.passphrase = this.cluster.config.options.SSL_PASSPHRASE;
+                    o.cert = this.cluster.config.options.SSL_CERT;
+                    o.ca = this.cluster.config.options.SSL_CA;
+                    o.rejectUnauthorized = false;
+                }
+                o.hostname = match[2];
+                if(match[3]) {
+                    o.port = match[3];
                 }
             } else {
                 o.hostname = this.url;
             }
             var deferred = when.defer();
-            var req = http.request(o,function(res){
+            var req = send.request(o,function(res){
                 res.setEncoding('utf8');
                 res.on('data',function(chunk){
                     buffer += chunk;

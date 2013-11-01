@@ -11,7 +11,7 @@
     function Connection() {};
 
     module.exports = function(opts) {
-        var cluster = new Cluster('http://'+window.location.host);
+        var cluster = new Cluster(window.location.protocol+'//'+window.location.host);
         var connectionConfig = new ConnectionConfig(opts);
         Connection.prototype = cluster.getSession(connectionConfig);
         return new Connection();

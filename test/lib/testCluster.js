@@ -9,12 +9,13 @@ var _ = require('underscore');
 var when = require('when');
 
 var clusterSize = 4;
+var sslSize = 2;
 var portGenerator = __dirname+'/../mocks/bin/port';
 
 module.exports = {
     testNonHttp: {
         setUp: function(callback) {
-            this.cluster = new Cluster('h1','h2',['h3','h4'],'h5');
+            this.cluster = new Cluster('h1','h2:8080',['h3','https://h4'],'http://h5');
             callback();
         },
         testConstructor: function(test) {
@@ -26,7 +27,7 @@ module.exports = {
             test.expect(2);
             var hosts = this.cluster.getURIs();
             test.strictEqual(hosts.length,5,"getURIs(): should have 5 hosts");
-            test.strictEqual(_.intersection(hosts,['http://h1','http://h2','http://h3','http://h4','http://h5']).length,5,
+            test.strictEqual(_.intersection(hosts,['http://h1','http://h2:8080','http://h3','https://h4','http://h5']).length,5,
                 "getURIs(): hosts are h1-h5");
             test.done();
         },
@@ -34,8 +35,8 @@ module.exports = {
             test.expect(2);
             this.cluster.addURIs('host');
             test.equal(_(this.cluster.getURIs()).indexOf('http://host')>-1,true,"addURIs(): 'host' should be added");
-            this.cluster.addURIs(['host2','http://host3'],'host4');
-            test.equal(_.intersection(this.cluster.getURIs(),['http://host2','http://host3','http://host4']).length,3,
+            this.cluster.addURIs(['host2','http://host3'],'https://host4');
+            test.equal(_.intersection(this.cluster.getURIs(),['http://host2','http://host3','https://host4']).length,3,
                 "addURIs(): host2-host4 should be added");
             test.done();
         }
@@ -50,10 +51,12 @@ module.exports = {
                 var ports = stdout.split(" ").map(function(str){
                     return parseInt(str.trim());
                 });
-                that.cluster = new Cluster(ports.map(function(p){
-                    return 'http://localhost:'+p;
-                }));
-                ports.forEach(function(p) {
+                var hosts = [];
+                for(var i=0;i<clusterSize;i++) {
+                    hosts.push('http'+(i<sslSize ? 's' : '')+'://localhost:'+ports[i]);
+                }
+                that.cluster = new Cluster(hosts);
+                ports.forEach(function(p,i) {
                     var builder = (new MockServerBuilder);
                     builder.addPath('GET','/analytics/api/schema').
                         addResponse('',{
@@ -63,7 +66,7 @@ module.exports = {
                             },
                             body: fs.readFileSync(__dirname+'/../mocks/json/schema.json')
                         });
-                    that.servers.push(builder.listen(p));
+                    that.servers.push(builder.listen(p,{protocol: (i<sslSize ? 'https' : 'http')}));
                 });
                 that.servers.forEach(function(s){
                     s.on('listening',done);
@@ -101,7 +104,11 @@ module.exports = {
             },
             testApiCallWithSession: {
                 setUp: function(callback) {
-                    this.cluster.getSession();
+                    var config = new ConnectionConfig({
+                        SSL_PFX: fs.readFileSync(__dirname+'/../mocks/ssl/mycert.pfx'),
+                        SSL_PASSPHRASE: 'password'
+                    });
+                    this.cluster.getSession(config);
                     callback();
                 },
                 testApiCallWithHostsDown: function(test) {
@@ -182,26 +189,6 @@ module.exports = {
                     test.ok(host,"selectHost(): should succeed with some hosts down");
                     test.equal(host.down,undefined);
                     test.done();
-                },
-                testSelectHostAfterRestartingHost: function(test) {
-                    var port = _(this.cluster.hosts).chain().keys().map(function(url){
-                        return parseInt(/http:\/\/.*[^:]:(.*)/.exec(url)[1]);
-                    }).min().value();
-                    var firstDownHost = 'http://localhost:'+port;
-                    var builder = (new MockServerBuilder);
-                    var that = this;
-                    builder.addPath('GET','/schema').addResponse('',{
-                        status: 200,
-                        headers: {
-                            'Content-type': 'application/json'
-                        },
-                        body: JSON.stringify({mock: 'me'})
-                    });
-                    this.servers[0] = builder.listen(port);
-                    setTimeout(function(){
-                        test.notEqual(firstDownHost,that.cluster.selectHost().url);
-                        test.done();
-                    },2200);
                 }
             }
         },

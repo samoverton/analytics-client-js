@@ -63,6 +63,7 @@
                     o.cert = this.cluster.config.options.SSL_CERT;
                     o.ca = this.cluster.config.options.SSL_CA;
                     o.rejectUnauthorized = false;
+                    o.agent = false;
                 }
                 o.hostname = match[2];
                 if(match[3]) {

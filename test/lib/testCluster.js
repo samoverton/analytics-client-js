@@ -105,7 +105,7 @@ module.exports = {
             testApiCallWithSession: {
                 setUp: function(callback) {
                     var config = new ConnectionConfig({
-                        SSL_PFX: fs.readFileSync(__dirname+'/../mocks/ssl/mycert.pfx'),
+                        SSL_PFX: __dirname+'/../mocks/ssl/mycert.pfx',
                         SSL_PASSPHRASE: 'password'
                     });
                     this.cluster.getSession(config);
@@ -176,7 +176,7 @@ module.exports = {
                         for(var i=0;i<10;i++) {
                             promises.push(cluster.apiCall('GET')('schema'));
                         }
-                        when.all(promises).then(function(){
+                        when.all(promises).ensure(function(){
                             callback();
                         });
                     });

@@ -58,10 +58,10 @@
                 if(match[1] == 'https') {
                     send = https;
                     o.pfx = fs.readFileSync(this.cluster.config.options.SSL_PFX);
-                    o.key = this.cluster.config.options.SSL_KEY;
+                    o.key = fs.readFileSync(this.cluster.config.options.SSL_KEY);
                     o.passphrase = this.cluster.config.options.SSL_PASSPHRASE;
-                    o.cert = this.cluster.config.options.SSL_CERT;
-                    o.ca = this.cluster.config.options.SSL_CA;
+                    o.cert = fs.readFileSync(this.cluster.config.options.SSL_CERT);
+                    o.ca = fs.readFileSync(this.cluster.config.options.SSL_CA);
                     o.rejectUnauthorized = false;
                     o.agent = false;
                 }
